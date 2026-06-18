@@ -856,13 +856,11 @@ do
             table.insert(SequenceTable, ColorSequenceKeypoint.new(Hue, Color3.fromHSV(Hue, 1, 1)));
         end;
 
-            ContextMenu.Container = Library:Create('Frame', {
-                BorderColor3 = Color3.new(),
-                ZIndex = 14,
-
-                Visible = false,
-                Parent = ScreenGui
-            })
+        local HueSelectorGradient = Library:Create('UIGradient', {
+            Color = ColorSequence.new(SequenceTable);
+            Rotation = 90;
+            Parent = HueSelectorInner;
+        });
 
         HueBox.FocusLost:Connect(function(enter)
             if enter then
@@ -2155,37 +2153,19 @@ do
             Parent = SliderInner;
         });
 
-        local InputBoxOuter = Library:Create('Frame', {
-            BackgroundColor3 = Library.OutlineColor;
-            BorderColor3 = Library.OutlineColor;
-            Size = UDim2.new(1, -4, 0, 22);
-            Position = UDim2.new(0, 2, 0, -3);
-            Visible = false;
-            ZIndex = 15;
-            Parent = SliderOuter;
-        });
-
-        local InputBoxInner = Library:Create('Frame', {
-            BackgroundColor3 = Library.MainColor;
-            BorderColor3 = Library.OutlineColor;
-            BorderMode = Enum.BorderMode.Inset;
-            Size = UDim2.new(1, 0, 1, 0);
-            ZIndex = 16;
-            Parent = InputBoxOuter;
-        });
-
         local InputBox = Library:Create('TextBox', {
             BackgroundTransparency = 1;
-            Size = UDim2.new(1, -10, 1, 0);
-            Position = UDim2.new(0, 5, 0, 0);
+            Size = UDim2.new(1, 0, 1, 0);
+            Position = UDim2.new(0, 0, 0, 0);
             Font = Library.Font;
             Text = '';
             TextColor3 = Library.FontColor;
             TextSize = 14;
             TextStrokeTransparency = 0;
             ClearTextOnFocus = true;
-            ZIndex = 17;
-            Parent = InputBoxInner;
+            Visible = false;
+            ZIndex = 10;
+            Parent = SliderInner;
         });
 
         Library:ApplyTextStroke(InputBox);
@@ -2200,7 +2180,8 @@ do
             if Input.UserInputType == Enum.UserInputType.MouseButton1 then
                 local now = tick()
                 if now - LastClick < 0.3 then
-                    InputBoxOuter.Visible = true
+                    DisplayLabel.Visible = false
+                    InputBox.Visible = true
                     InputBox.Text = tostring(Slider.Value)
                     InputBox:CaptureFocus()
                 end
@@ -2216,7 +2197,8 @@ do
                     Slider:SetValue(num)
                 end
             end
-            InputBoxOuter.Visible = false
+            DisplayLabel.Visible = true
+            InputBox.Visible = false
         end);
 
         InputBox:GetPropertyChangedSignal('Text'):Connect(function()
@@ -2273,24 +2255,6 @@ do
 
         function Slider:GetValueFromXOffset(X)
             return Round(Library:MapValue(X, 0, Slider.MaxSize, Slider.Min, Slider.Max));
-        end;
-
-        function Slider:SetValue(Str)
-            local Num = tonumber(Str);
-
-            if (not Num) then
-                return;
-            end;
-
-            -- Remove decimals
-            Num = math.floor(Num + 0.5)
-            Num = math.clamp(Num, Slider.Min, Slider.Max);
-
-            Slider.Value = Num;
-            Slider:Display();
-
-            Library:SafeCallback(Slider.Callback, Slider.Value);
-            Library:SafeCallback(Slider.Changed, Slider.Value);
         end;
 
         SliderInner.InputBegan:Connect(function(Input)
