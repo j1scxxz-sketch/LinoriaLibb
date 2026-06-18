@@ -1975,7 +1975,7 @@ do
         
         Library:OnHighlight(ToggleRegion, ToggleOuter,
             { BorderColor3 = 'AccentColor' },
-            { BorderColor3 = 'Black' }
+            { BorderColor3 = 'OutlineColor' }
         );
 
         function Toggle:UpdateColors()
@@ -3784,6 +3784,49 @@ function Library:CreateWindow(...)
     if Config.AutoShow then task.spawn(Library.Toggle) end
 
     Window.Holder = Outer;
+
+    -- Resize handle
+    local ResizeHandle = Library:Create('ImageLabel', {
+        Name = 'ResizeHandle';
+        BackgroundTransparency = 1;
+        Position = UDim2.new(1, -16, 1, -16);
+        Size = UDim2.new(0, 16, 0, 16);
+        Image = 'rbxassetid://7072725348'; -- diagonal resize arrows
+        ImageColor3 = Library.OutlineColor;
+        ImageTransparency = 0.5;
+        ZIndex = 5;
+        Parent = Outer;
+    });
+
+    Library:AddToRegistry(ResizeHandle, {
+        ImageColor3 = 'OutlineColor';
+    });
+
+    local Resizing = false;
+    local StartSize, StartPos;
+
+    ResizeHandle.InputBegan:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+            Resizing = true;
+            StartSize = Outer.Size;
+            StartPos = Vector2.new(Mouse.X, Mouse.Y);
+        end
+    end);
+
+    Library:GiveSignal(InputService.InputChanged:Connect(function(Input)
+        if Resizing and Input.UserInputType == Enum.UserInputType.MouseMovement then
+            local Delta = Vector2.new(Mouse.X, Mouse.Y) - StartPos;
+            local NewWidth = math.max(400, StartSize.X.Offset + Delta.X);
+            local NewHeight = math.max(300, StartSize.Y.Offset + Delta.Y);
+            Outer.Size = UDim2.new(0, NewWidth, 0, NewHeight);
+        end
+    end));
+
+    Library:GiveSignal(InputService.InputEnded:Connect(function(Input)
+        if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+            Resizing = false;
+        end
+    end));
 
     return Window;
 end;
