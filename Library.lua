@@ -1901,8 +1901,8 @@ do
         });
 
         local ToggleLabel = Library:CreateLabel({
-            Size = UDim2.new(0, 210, 1, 0);
-            Position = UDim2.new(1, 8, 0, 0);
+            Size = UDim2.new(1, -24, 1, 0);
+            Position = UDim2.new(1, 20, 0, 0);
             TextSize = 14;
             Text = Info.Text;
             TextXAlignment = Enum.TextXAlignment.Left;
@@ -1920,11 +1920,11 @@ do
 
         local ToggleRegion = Library:Create('Frame', {
             BackgroundTransparency = 1;
-            Size = UDim2.new(0, 170, 1, 0);
+            Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 8;
             Parent = ToggleOuter;
         });
-
+        
         Library:OnHighlight(ToggleRegion, ToggleOuter,
             { BorderColor3 = 'AccentColor' },
             { BorderColor3 = 'Black' }
@@ -1942,14 +1942,9 @@ do
             local TargetColor = Toggle.Value and Library.AccentColor or Library.MainColor;
             local TargetBorder = Toggle.Value and Library.AccentColorDark or Library.OutlineColor;
 
-            TweenService:Create(ToggleInner, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                BackgroundColor3 = TargetColor;
-                BorderColor3 = TargetBorder;
-            }):Play();
-
-            TweenService:Create(ToggleCheck, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
-                ImageTransparency = Toggle.Value and 0 or 1;
-            }):Play();
+            ToggleInner.BackgroundColor3 = TargetColor;
+            ToggleInner.BorderColor3 = TargetBorder;
+            ToggleCheck.ImageTransparency = Toggle.Value and 0 or 1;
 
             Library.RegistryMap[ToggleInner].Properties.BackgroundColor3 = Toggle.Value and 'AccentColor' or 'MainColor';
             Library.RegistryMap[ToggleInner].Properties.BorderColor3 = Toggle.Value and 'AccentColorDark' or 'OutlineColor';
@@ -1992,6 +1987,9 @@ do
         end
 
         Toggle:Display();
+        task.defer(function()
+            Toggle:Display();
+        end);
         Groupbox:AddBlank(Info.BlankSize or 5 + 2);
         Groupbox:Resize();
 
@@ -3026,7 +3024,7 @@ function Library:CreateWindow(...)
 
     local Outer = Library:Create('Frame', {
         AnchorPoint = Config.AnchorPoint,
-        BackgroundColor3 = Color3.new(0, 0, 0);
+        BackgroundColor3 = Library.OutlineColor;
         BorderSizePixel = 0;
         Position = Config.Position,
         Size = Config.Size,
