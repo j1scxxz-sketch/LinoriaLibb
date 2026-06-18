@@ -3236,10 +3236,10 @@ function Library:CreateWindow(...)
 
             local GroupboxLabel = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 0, 18);
-                Position = UDim2.new(0, 4, 0, 2);
+                Position = UDim2.new(0, 0, 0, 2);
                 TextSize = 14;
                 Text = Info.Name;
-                TextXAlignment = Enum.TextXAlignment.Left;
+                TextXAlignment = Enum.TextXAlignment.Center;
                 ZIndex = 5;
                 Parent = BoxInner;
             });
@@ -3267,7 +3267,7 @@ function Library:CreateWindow(...)
                     end;
                 end;
 
-                BoxOuter.Size = UDim2.new(1, 0, 0, 20 + Size + 2 + 2);
+                BoxOuter.Size = UDim2.new(1, 0, 0, 24 + Size + 8);
             end;
 
             Groupbox.Container = Container;
@@ -3387,14 +3387,13 @@ function Library:CreateWindow(...)
                     BackgroundColor3 = 'BackgroundColor';
                 });
 
-                local Container = Library:Create('Frame', {
-                    BackgroundTransparency = 1;
-                    Position = UDim2.new(0, 4, 0, 20);
-                    Size = UDim2.new(1, -4, 1, -20);
-                    ZIndex = 1;
-                    Visible = false;
-                    Parent = BoxInner;
-                });
+            local Container = Library:Create('Frame', {
+                BackgroundTransparency = 1;
+                Position = UDim2.new(0, 8, 0, 22);
+                Size = UDim2.new(1, -16, 1, -24);
+                ZIndex = 1;
+                Parent = BoxInner;
+            });
 
                 Library:Create('UIListLayout', {
                     FillDirection = Enum.FillDirection.Vertical;
