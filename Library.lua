@@ -1911,8 +1911,8 @@ do
         local Container = Groupbox.Container;
 
         local ToggleOuter = Library:Create('Frame', {
-            BackgroundColor3 = Color3.new(0, 0, 0);
-            BorderColor3 = Color3.fromRGB(80, 80, 80);
+            BackgroundColor3 = Library.OutlineColor;
+            BorderColor3 = Library.OutlineColor;
             Size = UDim2.new(0, 16, 0, 16);
             ZIndex = 5;
             Parent = Container;
@@ -3786,45 +3786,49 @@ function Library:CreateWindow(...)
 
     Window.Holder = Outer;
 
-    local ResizeHandle = Library:Create('ImageLabel', {
+    local ResizeHandle = Library:Create('Frame', {
         Name = 'ResizeHandle';
-        BackgroundTransparency = 1;
-        Position = UDim2.new(1, -20, 1, -20);
-        Size = UDim2.new(0, 20, 0, 20);
-        Image = 'rbxassetid://13350766139'; -- diagonal resize arrows
-        ImageColor3 = Library.OutlineColor;
-        ImageTransparency = 0.3;
+        BackgroundColor3 = Library.OutlineColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(1, -16, 1, -16);
+        Size = UDim2.new(0, 16, 0, 16);
         ZIndex = 5;
         Parent = Outer;
     });
 
     Library:AddToRegistry(ResizeHandle, {
-        ImageColor3 = 'OutlineColor';
+        BackgroundColor3 = 'OutlineColor';
     });
 
-    -- Draw diagonal resize lines
-    local Line1 = Library:Create('Frame', {
+    -- Draw 3 diagonal lines for resize grip
+    local GripLine1 = Library:Create('Frame', {
         BackgroundColor3 = Library.FontColor;
         BorderSizePixel = 0;
-        Position = UDim2.new(0, 2, 0, 10);
+        Position = UDim2.new(0, 3, 0, 9);
         Size = UDim2.new(0, 10, 0, 2);
         Rotation = 45;
         ZIndex = 6;
         Parent = ResizeHandle;
     });
 
-    local Line2 = Library:Create('Frame', {
+    local GripLine2 = Library:Create('Frame', {
         BackgroundColor3 = Library.FontColor;
         BorderSizePixel = 0;
-        Position = UDim2.new(0, 6, 0, 10);
+        Position = UDim2.new(0, 6, 0, 9);
         Size = UDim2.new(0, 10, 0, 2);
         Rotation = 45;
         ZIndex = 6;
         Parent = ResizeHandle;
     });
 
-    Library:AddToRegistry(ResizeHandle, {
-        ImageColor3 = 'OutlineColor';
+    local GripLine3 = Library:Create('Frame', {
+        BackgroundColor3 = Library.FontColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(0, 9, 0, 9);
+        Size = UDim2.new(0, 10, 0, 2);
+        Rotation = 45;
+        ZIndex = 6;
+        Parent = ResizeHandle;
     });
 
     local Resizing = false;
