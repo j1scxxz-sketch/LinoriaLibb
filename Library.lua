@@ -1911,7 +1911,7 @@ do
         local Container = Groupbox.Container;
 
         local ToggleOuter = Library:Create('Frame', {
-            BackgroundColor3 = Library.OutlineColor;
+            BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Library.OutlineColor;
             Size = UDim2.new(0, 16, 0, 16);
             ZIndex = 5;
