@@ -1911,7 +1911,7 @@ do
         local Container = Groupbox.Container;
 
         local ToggleOuter = Library:Create('Frame', {
-            BackgroundColor3 = Color3.new(0, 0, 0);
+            BackgroundColor3 = Library.BackgroundColor;
             BorderColor3 = Library.OutlineColor;
             Size = UDim2.new(0, 16, 0, 16);
             ZIndex = 5;
@@ -3244,8 +3244,9 @@ function Library:CreateWindow(...)
 
         local TabButtonLabel = Library:CreateLabel({
             Position = UDim2.new(0, 0, 0, 0);
-            Size = UDim2.new(1, 0, 1, -1);
+            Size = UDim2.new(1, 0, 1, 0);
             Text = Name;
+            TextYAlignment = Enum.TextYAlignment.Center;
             ZIndex = 1;
             Parent = TabButton;
         });
@@ -3785,17 +3786,35 @@ function Library:CreateWindow(...)
 
     Window.Holder = Outer;
 
-    -- Resize handle
-    local ResizeHandle = Library:Create('ImageLabel', {
+    local ResizeHandle = Library:Create('Frame', {
         Name = 'ResizeHandle';
-        BackgroundTransparency = 1;
-        Position = UDim2.new(1, -16, 1, -16);
-        Size = UDim2.new(0, 16, 0, 16);
-        Image = 'rbxassetid://7072725348'; -- diagonal resize arrows
-        ImageColor3 = Library.OutlineColor;
-        ImageTransparency = 0.5;
+        BackgroundColor3 = Library.OutlineColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(1, -14, 1, -14);
+        Size = UDim2.new(0, 14, 0, 14);
         ZIndex = 5;
         Parent = Outer;
+    });
+
+    -- Draw diagonal resize lines
+    local Line1 = Library:Create('Frame', {
+        BackgroundColor3 = Library.FontColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(0, 2, 0, 10);
+        Size = UDim2.new(0, 10, 0, 2);
+        Rotation = 45;
+        ZIndex = 6;
+        Parent = ResizeHandle;
+    });
+
+    local Line2 = Library:Create('Frame', {
+        BackgroundColor3 = Library.FontColor;
+        BorderSizePixel = 0;
+        Position = UDim2.new(0, 6, 0, 10);
+        Size = UDim2.new(0, 10, 0, 2);
+        Rotation = 45;
+        ZIndex = 6;
+        Parent = ResizeHandle;
     });
 
     Library:AddToRegistry(ResizeHandle, {
