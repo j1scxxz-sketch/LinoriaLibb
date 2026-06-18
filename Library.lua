@@ -3074,20 +3074,19 @@ function Library:CreateWindow(...)
 
     Library:MakeDraggable(Outer, 25);
 
-    local Inner = Library:Create('Frame', {
-        BackgroundColor3 = Library.MainColor;
-        BorderColor3 = Color3.new(0, 0, 0);
-        BorderMode = Enum.BorderMode.Inset;
-        Position = UDim2.new(0, 1, 0, 1);
-        Size = UDim2.new(1, -2, 1, -2);
-        ZIndex = 1;
-        Parent = Outer;
-    });
+            local Inner = Library:Create('Frame', {
+                BackgroundColor3 = Library.MainColor;
+                BorderColor3 = Library.OutlineColor;
+                BorderMode = Enum.BorderMode.Inset;
+                Size = UDim2.new(1, 0, 1, 0);
+                ZIndex = 6;
+                Parent = Outer;
+            });
 
-    Library:Create('UICorner', {
-        CornerRadius = UDim.new(0, 7);
-        Parent = Inner;
-    });
+            Library:Create('UICorner', {
+                CornerRadius = UDim.new(0, 3);
+                Parent = Inner;
+            });
 
     Library:AddToRegistry(Inner, {
         BackgroundColor3 = 'MainColor';
