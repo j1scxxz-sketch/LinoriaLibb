@@ -459,10 +459,10 @@ do
 
         local PickerFrameOuter = Library:Create('Frame', {
             Name = 'Color';
-            BackgroundColor3 = Color3.new(1, 1, 1);
-            BorderColor3 = Color3.new(0, 0, 0);
+            BackgroundColor3 = Library.OutlineColor;
+            BorderColor3 = Library.OutlineColor;
             Position = UDim2.fromOffset(DisplayFrame.AbsolutePosition.X, DisplayFrame.AbsolutePosition.Y + 18),
-            Size = UDim2.fromOffset(230, Info.Transparency and 271 or 253);
+            Size = UDim2.fromOffset(260, Info.Transparency and 310 or 290);
             Visible = false;
             ZIndex = 15;
             Parent = ScreenGui,
@@ -489,10 +489,54 @@ do
             Parent = PickerFrameInner;
         });
 
+        local PickerTopBar = Library:Create('Frame', {
+            BackgroundColor3 = Library.MainColor;
+            BorderSizePixel = 0;
+            Size = UDim2.new(1, 0, 0, 28);
+            ZIndex = 17;
+            Parent = PickerFrameInner;
+        });
+
+        Library:AddToRegistry(PickerTopBar, {
+            BackgroundColor3 = 'MainColor';
+        });
+
+        local PickerTopBarTitle = Library:CreateLabel({
+            Size = UDim2.new(1, -10, 1, 0);
+            Position = UDim2.new(0, 8, 0, 0);
+            TextSize = 14;
+            Text = ColorPicker.Title;
+            TextXAlignment = Enum.TextXAlignment.Left;
+            ZIndex = 18;
+            Parent = PickerTopBar;
+        });
+
+        local PickerCloseButton = Library:Create('TextLabel', {
+            BackgroundTransparency = 1;
+            Size = UDim2.new(0, 20, 0, 20);
+            Position = UDim2.new(1, -24, 0, 4);
+            Text = '×';
+            TextColor3 = Library.FontColor;
+            TextSize = 18;
+            Font = Library.Font;
+            ZIndex = 18;
+            Parent = PickerTopBar;
+        });
+
+        Library:AddToRegistry(PickerCloseButton, {
+            TextColor3 = 'FontColor';
+        });
+
+        PickerCloseButton.InputBegan:Connect(function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                ColorPicker:Hide();
+            end;
+        end);
+
         local SatVibMapOuter = Library:Create('Frame', {
-            BorderColor3 = Color3.new(0, 0, 0);
-            Position = UDim2.new(0, 4, 0, 25);
-            Size = UDim2.new(0, 200, 0, 200);
+            BorderColor3 = Library.OutlineColor;
+            Position = UDim2.new(0, 8, 0, 36);
+            Size = UDim2.new(0, 210, 0, 180);
             ZIndex = 17;
             Parent = PickerFrameInner;
         });
@@ -534,9 +578,9 @@ do
         })
 
         local HueSelectorOuter = Library:Create('Frame', {
-            BorderColor3 = Color3.new(0, 0, 0);
-            Position = UDim2.new(0, 208, 0, 25);
-            Size = UDim2.new(0, 15, 0, 200);
+            BorderColor3 = Library.OutlineColor;
+            Position = UDim2.new(0, 224, 0, 36);
+            Size = UDim2.new(0, 18, 0, 180);
             ZIndex = 17;
             Parent = PickerFrameInner;
         });
@@ -559,9 +603,9 @@ do
         });
 
         local HueBoxOuter = Library:Create('Frame', {
-            BorderColor3 = Color3.new(0, 0, 0);
-            Position = UDim2.fromOffset(4, 228),
-            Size = UDim2.new(0.5, -6, 0, 20),
+            BorderColor3 = Library.OutlineColor;
+            Position = UDim2.fromOffset(8, 222),
+            Size = UDim2.new(0.5, -10, 0, 24),
             ZIndex = 18,
             Parent = PickerFrameInner;
         });
@@ -603,8 +647,8 @@ do
         Library:ApplyTextStroke(HueBox);
 
         local RgbBoxBase = Library:Create(HueBoxOuter:Clone(), {
-            Position = UDim2.new(0.5, 2, 0, 228),
-            Size = UDim2.new(0.5, -6, 0, 20),
+            Position = UDim2.new(0.5, 4, 0, 222),
+            Size = UDim2.new(0.5, -10, 0, 24),
             Parent = PickerFrameInner
         });
 
@@ -618,9 +662,9 @@ do
         
         if Info.Transparency then 
             TransparencyBoxOuter = Library:Create('Frame', {
-                BorderColor3 = Color3.new(0, 0, 0);
-                Position = UDim2.fromOffset(4, 251);
-                Size = UDim2.new(1, -8, 0, 15);
+                BorderColor3 = Library.OutlineColor;
+                Position = UDim2.fromOffset(8, 250);
+                Size = UDim2.new(1, -16, 0, 18);
                 ZIndex = 19;
                 Parent = PickerFrameInner;
             });
@@ -654,16 +698,7 @@ do
             });
         end;
 
-        local DisplayLabel = Library:CreateLabel({
-            Size = UDim2.new(1, 0, 0, 14);
-            Position = UDim2.fromOffset(5, 5);
-            TextXAlignment = Enum.TextXAlignment.Left;
-            TextSize = 14;
-            Text = ColorPicker.Title,--Info.Default;
-            TextWrapped = false;
-            ZIndex = 16;
-            Parent = PickerFrameInner;
-        });
+        -- replaced by PickerTopBarTitle above
 
 
         local ContextMenu = {}
@@ -705,6 +740,9 @@ do
                     DisplayFrame.AbsolutePosition.Y + 1
                 )
             end
+
+            ContextMenu.Container.BackgroundColor3 = Library.OutlineColor;
+            ContextMenu.Container.BorderColor3 = Library.OutlineColor;
 
             local function updateMenuSize()
                 local menuWidth = 60
@@ -1862,16 +1900,24 @@ do
         local Groupbox = self;
         local Container = Groupbox.Container;
 
-        local ToggleOuter = Library:Create('Frame', {
-            BackgroundColor3 = Color3.new(0, 0, 0);
-            BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(0, 16, 0, 16);
+        local ToggleHolder = Library:Create('Frame', {
+            BackgroundTransparency = 1;
+            Size = UDim2.new(1, 0, 0, 16);
             ZIndex = 5;
             Parent = Container;
         });
 
+        local ToggleOuter = Library:Create('Frame', {
+            BackgroundColor3 = Library.OutlineColor;
+            BorderColor3 = Library.OutlineColor;
+            Size = UDim2.new(0, 16, 0, 16);
+            Position = UDim2.new(0, 0, 0, 0);
+            ZIndex = 5;
+            Parent = ToggleHolder;
+        });
+
         Library:AddToRegistry(ToggleOuter, {
-            BorderColor3 = 'Black';
+            BorderColor3 = 'OutlineColor';
         });
 
         local ToggleInner = Library:Create('Frame', {
@@ -1901,28 +1947,20 @@ do
         });
 
         local ToggleLabel = Library:CreateLabel({
-            Size = UDim2.new(1, -24, 1, 0);
-            Position = UDim2.new(1, 20, 0, 0);
+            Size = UDim2.new(1, -24, 0, 16);
+            Position = UDim2.new(0, 22, 0, 0);
             TextSize = 14;
             Text = Info.Text;
             TextXAlignment = Enum.TextXAlignment.Left;
             ZIndex = 6;
-            Parent = ToggleInner;
-        });
-
-        Library:Create('UIListLayout', {
-            Padding = UDim.new(0, 4);
-            FillDirection = Enum.FillDirection.Horizontal;
-            HorizontalAlignment = Enum.HorizontalAlignment.Right;
-            SortOrder = Enum.SortOrder.LayoutOrder;
-            Parent = ToggleLabel;
+            Parent = ToggleHolder;
         });
 
         local ToggleRegion = Library:Create('Frame', {
             BackgroundTransparency = 1;
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 8;
-            Parent = ToggleOuter;
+            Parent = ToggleHolder;
         });
         
         Library:OnHighlight(ToggleRegion, ToggleOuter,
@@ -1987,9 +2025,6 @@ do
         end
 
         Toggle:Display();
-        task.defer(function()
-            Toggle:Display();
-        end);
         Groupbox:AddBlank(Info.BlankSize or 5 + 2);
         Groupbox:Resize();
 
@@ -2139,18 +2174,82 @@ do
             HideBorderRight.Visible = not (X == Slider.MaxSize or X == 0);
         end;
 
+        local InputBoxOuter, InputBoxInner, InputBox;
+
+        InputBoxOuter = Library:Create('Frame', {
+            BackgroundColor3 = Library.OutlineColor;
+            BorderColor3 = Library.OutlineColor;
+            Size = UDim2.new(1, -4, 0, 22);
+            Position = UDim2.new(0, 2, 0, 0);
+            Visible = false;
+            ZIndex = 10;
+            Parent = SliderOuter;
+        });
+
+        InputBoxInner = Library:Create('Frame', {
+            BackgroundColor3 = Library.MainColor;
+            BorderColor3 = Library.OutlineColor;
+            BorderMode = Enum.BorderMode.Inset;
+            Size = UDim2.new(1, 0, 1, 0);
+            ZIndex = 11;
+            Parent = InputBoxOuter;
+        });
+
+        InputBox = Library:Create('TextBox', {
+            BackgroundTransparency = 1;
+            Size = UDim2.new(1, -10, 1, 0);
+            Position = UDim2.new(0, 5, 0, 0);
+            Font = Library.Font;
+            Text = tostring(Slider.Value);
+            TextColor3 = Library.FontColor;
+            TextSize = 14;
+            TextStrokeTransparency = 0;
+            ClearTextOnFocus = true;
+            ZIndex = 12;
+            Parent = InputBoxInner;
+        });
+
+        Library:ApplyTextStroke(InputBox);
+
+        Library:AddToRegistry(InputBox, {
+            TextColor3 = 'FontColor';
+        });
+
+        DisplayLabel.InputBegan:Connect(function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                local now = tick()
+                if now - (Slider.LastClick or 0) < 0.3 then
+                    -- Double click
+                    InputBoxOuter.Visible = true;
+                    DisplayLabel.Visible = false;
+                    InputBox.Text = tostring(Slider.Value);
+                    InputBox:CaptureFocus();
+                end
+                Slider.LastClick = now
+            end
+        end);
+
+        InputBox.FocusLost:Connect(function(enter)
+            if enter then
+                local num = tonumber(InputBox.Text)
+                if num then
+                    -- Remove decimals by rounding
+                    num = math.floor(num + 0.5)
+                    Slider:SetValue(num)
+                end
+            end
+            InputBoxOuter.Visible = false;
+            DisplayLabel.Visible = true;
+        end);
+
         function Slider:OnChanged(Func)
             Slider.Changed = Func;
             Func(Slider.Value);
         end;
 
         local function Round(Value)
-            if Slider.Rounding == 0 then
-                return math.floor(Value);
-            end;
-
-
-            return tonumber(string.format('%.' .. Slider.Rounding .. 'f', Value))
+            -- Always round to whole number, no decimals
+            return math.floor(Value + 0.5);
         end;
 
         function Slider:GetValueFromXOffset(X)
@@ -2164,6 +2263,8 @@ do
                 return;
             end;
 
+            -- Remove decimals
+            Num = math.floor(Num + 0.5)
             Num = math.clamp(Num, Slider.Min, Slider.Max);
 
             Slider.Value = Num;
