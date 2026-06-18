@@ -1923,8 +1923,8 @@ do
         });
 
         local ToggleInner = Library:Create('Frame', {
-            BackgroundColor3 = Library.MainColor;
-            BorderColor3 = Library.OutlineColor;
+            BackgroundColor3 = Color3.fromRGB(40, 40, 40);
+            BorderColor3 = Color3.fromRGB(100, 100, 100);
             BorderMode = Enum.BorderMode.Inset;
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 6;
@@ -1987,12 +1987,15 @@ do
         end
 
         function Toggle:Display()
-            local TargetColor = Toggle.Value and Library.AccentColor or Library.MainColor;
-            local TargetBorder = Toggle.Value and Library.AccentColorDark or Library.OutlineColor;
-
-            ToggleInner.BackgroundColor3 = TargetColor;
-            ToggleInner.BorderColor3 = TargetBorder;
-            ToggleCheck.ImageTransparency = Toggle.Value and 0 or 1;
+            if Toggle.Value then
+                ToggleInner.BackgroundColor3 = Library.AccentColor;
+                ToggleInner.BorderColor3 = Library.AccentColorDark;
+                ToggleCheck.ImageTransparency = 0;
+            else
+                ToggleInner.BackgroundColor3 = Color3.fromRGB(40, 40, 40);
+                ToggleInner.BorderColor3 = Color3.fromRGB(100, 100, 100);
+                ToggleCheck.ImageTransparency = 1;
+            end;
 
             Library.RegistryMap[ToggleInner].Properties.BackgroundColor3 = Toggle.Value and 'AccentColor' or 'MainColor';
             Library.RegistryMap[ToggleInner].Properties.BorderColor3 = Toggle.Value and 'AccentColorDark' or 'OutlineColor';
@@ -2425,7 +2428,7 @@ do
         end;
 
         local function RecalculateListSize(YSize)
-            ListOuter.Size = UDim2.fromOffset(DropdownOuter.AbsoluteSize.X, YSize or (MAX_DROPDOWN_ITEMS * 20 + 2))
+            ListOuter.Size = UDim2.fromOffset(DropdownOuter.AbsoluteSize.X - 2, YSize or (MAX_DROPDOWN_ITEMS * 20 + 2))
         end;
 
         RecalculateListPosition();
@@ -3788,47 +3791,12 @@ function Library:CreateWindow(...)
 
     local ResizeHandle = Library:Create('Frame', {
         Name = 'ResizeHandle';
-        BackgroundColor3 = Library.OutlineColor;
+        BackgroundTransparency = 1;
         BorderSizePixel = 0;
-        Position = UDim2.new(1, -16, 1, -16);
-        Size = UDim2.new(0, 16, 0, 16);
+        Position = UDim2.new(1, -20, 1, -20);
+        Size = UDim2.new(0, 20, 0, 20);
         ZIndex = 5;
         Parent = Outer;
-    });
-
-    Library:AddToRegistry(ResizeHandle, {
-        BackgroundColor3 = 'OutlineColor';
-    });
-
-    -- Draw 3 diagonal lines for resize grip
-    local GripLine1 = Library:Create('Frame', {
-        BackgroundColor3 = Library.FontColor;
-        BorderSizePixel = 0;
-        Position = UDim2.new(0, 3, 0, 9);
-        Size = UDim2.new(0, 10, 0, 2);
-        Rotation = 45;
-        ZIndex = 6;
-        Parent = ResizeHandle;
-    });
-
-    local GripLine2 = Library:Create('Frame', {
-        BackgroundColor3 = Library.FontColor;
-        BorderSizePixel = 0;
-        Position = UDim2.new(0, 6, 0, 9);
-        Size = UDim2.new(0, 10, 0, 2);
-        Rotation = 45;
-        ZIndex = 6;
-        Parent = ResizeHandle;
-    });
-
-    local GripLine3 = Library:Create('Frame', {
-        BackgroundColor3 = Library.FontColor;
-        BorderSizePixel = 0;
-        Position = UDim2.new(0, 9, 0, 9);
-        Size = UDim2.new(0, 10, 0, 2);
-        Rotation = 45;
-        ZIndex = 6;
-        Parent = ResizeHandle;
     });
 
     local Resizing = false;
