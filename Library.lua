@@ -1911,8 +1911,8 @@ do
         local Container = Groupbox.Container;
 
         local ToggleOuter = Library:Create('Frame', {
-            BackgroundColor3 = Library.BackgroundColor;
-            BorderColor3 = Library.OutlineColor;
+            BackgroundColor3 = Color3.new(0, 0, 0);
+            BorderColor3 = Color3.fromRGB(80, 80, 80);
             Size = UDim2.new(0, 16, 0, 16);
             ZIndex = 5;
             Parent = Container;
@@ -3786,14 +3786,20 @@ function Library:CreateWindow(...)
 
     Window.Holder = Outer;
 
-    local ResizeHandle = Library:Create('Frame', {
+    local ResizeHandle = Library:Create('ImageLabel', {
         Name = 'ResizeHandle';
-        BackgroundColor3 = Library.OutlineColor;
-        BorderSizePixel = 0;
-        Position = UDim2.new(1, -14, 1, -14);
-        Size = UDim2.new(0, 14, 0, 14);
+        BackgroundTransparency = 1;
+        Position = UDim2.new(1, -20, 1, -20);
+        Size = UDim2.new(0, 20, 0, 20);
+        Image = 'rbxassetid://13350766139'; -- diagonal resize arrows
+        ImageColor3 = Library.OutlineColor;
+        ImageTransparency = 0.3;
         ZIndex = 5;
         Parent = Outer;
+    });
+
+    Library:AddToRegistry(ResizeHandle, {
+        ImageColor3 = 'OutlineColor';
     });
 
     -- Draw diagonal resize lines
