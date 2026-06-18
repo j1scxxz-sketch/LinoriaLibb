@@ -1931,11 +1931,6 @@ do
             Parent = ToggleOuter;
         });
 
-        Library:AddToRegistry(ToggleInner, {
-            BackgroundColor3 = 'MainColor';
-            BorderColor3 = 'OutlineColor';
-        });
-
         local ToggleCheck = Library:Create('ImageLabel', {
             BackgroundTransparency = 1;
             Size = UDim2.new(0, 10, 0, 10);
@@ -1987,18 +1982,9 @@ do
         end
 
         function Toggle:Display()
-            if Toggle.Value then
-                ToggleInner.BackgroundColor3 = Library.AccentColor;
-                ToggleInner.BorderColor3 = Library.AccentColorDark;
-                ToggleCheck.ImageTransparency = 0;
-            else
-                ToggleInner.BackgroundColor3 = Color3.fromRGB(40, 40, 40);
-                ToggleInner.BorderColor3 = Color3.fromRGB(100, 100, 100);
-                ToggleCheck.ImageTransparency = 1;
-            end;
-
-            Library.RegistryMap[ToggleInner].Properties.BackgroundColor3 = Toggle.Value and 'AccentColor' or 'MainColor';
-            Library.RegistryMap[ToggleInner].Properties.BorderColor3 = Toggle.Value and 'AccentColorDark' or 'OutlineColor';
+            ToggleInner.BackgroundColor3 = Toggle.Value and Library.AccentColor or Color3.fromRGB(45, 45, 45);
+            ToggleInner.BorderColor3 = Toggle.Value and Library.AccentColorDark or Color3.fromRGB(120, 120, 120);
+            ToggleCheck.ImageTransparency = Toggle.Value and 0 or 1;
         end;
 
         function Toggle:OnChanged(Func)
