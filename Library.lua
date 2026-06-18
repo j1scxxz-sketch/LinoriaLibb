@@ -563,7 +563,7 @@ do
             Size = UDim2.new(0, 6, 0, 6);
             BackgroundTransparency = 1;
             Image = 'http://www.roblox.com/asset/?id=9619665977';
-            ImageColor3 = Color3.new(0, 0, 0);
+            ImageColor3 = Library.FontColor;
             ZIndex = 19;
             Parent = SatVibMap;
         });
@@ -586,20 +586,29 @@ do
         });
 
         local HueSelectorInner = Library:Create('Frame', {
-            BackgroundColor3 = Color3.new(1, 1, 1);
+            BackgroundColor3 = Library.MainColor;
             BorderSizePixel = 0;
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 18;
             Parent = HueSelectorOuter;
         });
 
+        Library:AddToRegistry(HueSelectorInner, {
+            BackgroundColor3 = 'MainColor';
+        });
+
         local HueCursor = Library:Create('Frame', { 
-            BackgroundColor3 = Color3.new(1, 1, 1);
+            BackgroundColor3 = Library.FontColor;
             AnchorPoint = Vector2.new(0, 0.5);
-            BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(1, 0, 0, 1);
+            BorderColor3 = Library.OutlineColor;
+            Size = UDim2.new(1, 0, 0, 2);
             ZIndex = 18;
             Parent = HueSelectorInner;
+        });
+
+        Library:AddToRegistry(HueCursor, {
+            BackgroundColor3 = 'FontColor';
+            BorderColor3 = 'OutlineColor';
         });
 
         local HueBoxOuter = Library:Create('Frame', {
@@ -689,12 +698,17 @@ do
             });
 
             TransparencyCursor = Library:Create('Frame', { 
-                BackgroundColor3 = Color3.new(1, 1, 1);
+                BackgroundColor3 = Library.FontColor;
                 AnchorPoint = Vector2.new(0.5, 0);
-                BorderColor3 = Color3.new(0, 0, 0);
-                Size = UDim2.new(0, 1, 1, 0);
+                BorderColor3 = Library.OutlineColor;
+                Size = UDim2.new(0, 2, 1, 0);
                 ZIndex = 21;
                 Parent = TransparencyBoxInner;
+            });
+
+            Library:AddToRegistry(TransparencyCursor, {
+                BackgroundColor3 = 'FontColor';
+                BorderColor3 = 'OutlineColor';
             });
         end;
 
@@ -846,11 +860,13 @@ do
             table.insert(SequenceTable, ColorSequenceKeypoint.new(Hue, Color3.fromHSV(Hue, 1, 1)));
         end;
 
-        local HueSelectorGradient = Library:Create('UIGradient', {
-            Color = ColorSequence.new(SequenceTable);
-            Rotation = 90;
-            Parent = HueSelectorInner;
-        });
+            ContextMenu.Container = Library:Create('Frame', {
+                BorderColor3 = Color3.new(),
+                ZIndex = 14,
+
+                Visible = false,
+                Parent = ScreenGui
+            })
 
         HueBox.FocusLost:Connect(function(enter)
             if enter then
@@ -1900,20 +1916,12 @@ do
         local Groupbox = self;
         local Container = Groupbox.Container;
 
-        local ToggleHolder = Library:Create('Frame', {
-            BackgroundTransparency = 1;
-            Size = UDim2.new(1, 0, 0, 16);
-            ZIndex = 5;
-            Parent = Container;
-        });
-
         local ToggleOuter = Library:Create('Frame', {
             BackgroundColor3 = Library.OutlineColor;
             BorderColor3 = Library.OutlineColor;
             Size = UDim2.new(0, 16, 0, 16);
-            Position = UDim2.new(0, 0, 0, 0);
             ZIndex = 5;
-            Parent = ToggleHolder;
+            Parent = Container;
         });
 
         Library:AddToRegistry(ToggleOuter, {
@@ -1947,20 +1955,28 @@ do
         });
 
         local ToggleLabel = Library:CreateLabel({
-            Size = UDim2.new(1, -24, 0, 16);
-            Position = UDim2.new(0, 22, 0, 0);
+            Size = UDim2.new(0, 216, 1, 0);
+            Position = UDim2.new(1, 8, 0, 0);
             TextSize = 14;
             Text = Info.Text;
             TextXAlignment = Enum.TextXAlignment.Left;
             ZIndex = 6;
-            Parent = ToggleHolder;
+            Parent = ToggleInner;
+        });
+
+        Library:Create('UIListLayout', {
+            Padding = UDim.new(0, 4);
+            FillDirection = Enum.FillDirection.Horizontal;
+            HorizontalAlignment = Enum.HorizontalAlignment.Right;
+            SortOrder = Enum.SortOrder.LayoutOrder;
+            Parent = ToggleLabel;
         });
 
         local ToggleRegion = Library:Create('Frame', {
             BackgroundTransparency = 1;
-            Size = UDim2.new(1, 0, 1, 0);
+            Size = UDim2.new(0, 170, 1, 0);
             ZIndex = 8;
-            Parent = ToggleHolder;
+            Parent = ToggleOuter;
         });
         
         Library:OnHighlight(ToggleRegion, ToggleOuter,
@@ -2135,12 +2151,24 @@ do
             BackgroundColor3 = 'AccentColor';
         });
 
-        local DisplayLabel = Library:CreateLabel({
+        local DisplayLabel = Library:Create('TextBox', {
+            BackgroundTransparency = 1;
             Size = UDim2.new(1, 0, 1, 0);
             TextSize = 14;
             Text = 'Infinite';
+            Font = Library.Font;
+            TextColor3 = Library.FontColor;
+            TextStrokeTransparency = 0;
+            TextXAlignment = Enum.TextXAlignment.Center;
+            ClearTextOnFocus = true;
             ZIndex = 9;
             Parent = SliderInner;
+        });
+
+        Library:ApplyTextStroke(DisplayLabel);
+
+        Library:AddToRegistry(DisplayLabel, {
+            TextColor3 = 'FontColor';
         });
 
         Library:OnHighlight(SliderOuter, SliderOuter,
@@ -2174,72 +2202,18 @@ do
             HideBorderRight.Visible = not (X == Slider.MaxSize or X == 0);
         end;
 
-        local InputBoxOuter, InputBoxInner, InputBox;
-
-        InputBoxOuter = Library:Create('Frame', {
-            BackgroundColor3 = Library.OutlineColor;
-            BorderColor3 = Library.OutlineColor;
-            Size = UDim2.new(1, -4, 0, 22);
-            Position = UDim2.new(0, 2, 0, 0);
-            Visible = false;
-            ZIndex = 10;
-            Parent = SliderOuter;
-        });
-
-        InputBoxInner = Library:Create('Frame', {
-            BackgroundColor3 = Library.MainColor;
-            BorderColor3 = Library.OutlineColor;
-            BorderMode = Enum.BorderMode.Inset;
-            Size = UDim2.new(1, 0, 1, 0);
-            ZIndex = 11;
-            Parent = InputBoxOuter;
-        });
-
-        InputBox = Library:Create('TextBox', {
-            BackgroundTransparency = 1;
-            Size = UDim2.new(1, -10, 1, 0);
-            Position = UDim2.new(0, 5, 0, 0);
-            Font = Library.Font;
-            Text = tostring(Slider.Value);
-            TextColor3 = Library.FontColor;
-            TextSize = 14;
-            TextStrokeTransparency = 0;
-            ClearTextOnFocus = true;
-            ZIndex = 12;
-            Parent = InputBoxInner;
-        });
-
-        Library:ApplyTextStroke(InputBox);
-
-        Library:AddToRegistry(InputBox, {
-            TextColor3 = 'FontColor';
-        });
-
-        DisplayLabel.InputBegan:Connect(function(Input)
-            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
-                local now = tick()
-                if now - (Slider.LastClick or 0) < 0.3 then
-                    -- Double click
-                    InputBoxOuter.Visible = true;
-                    DisplayLabel.Visible = false;
-                    InputBox.Text = tostring(Slider.Value);
-                    InputBox:CaptureFocus();
-                end
-                Slider.LastClick = now
-            end
-        end);
-
-        InputBox.FocusLost:Connect(function(enter)
+        DisplayLabel.FocusLost:Connect(function(enter)
             if enter then
-                local num = tonumber(InputBox.Text)
+                local num = tonumber(DisplayLabel.Text)
                 if num then
-                    -- Remove decimals by rounding
                     num = math.floor(num + 0.5)
                     Slider:SetValue(num)
+                else
+                    Slider:Display()
                 end
+            else
+                Slider:Display()
             end
-            InputBoxOuter.Visible = false;
-            DisplayLabel.Visible = true;
         end);
 
         function Slider:OnChanged(Func)
