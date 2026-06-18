@@ -2227,6 +2227,40 @@ do
             end
         end);
 
+                function Slider:Display()
+            local Suffix = Info.Suffix or '';
+
+            if Info.Compact then
+                DisplayLabel.Text = Info.Text .. ': ' .. Slider.Value .. Suffix
+            elseif Info.HideMax then
+                DisplayLabel.Text = string.format('%s', Slider.Value .. Suffix)
+            else
+                DisplayLabel.Text = string.format('%s/%s', Slider.Value .. Suffix, Slider.Max .. Suffix);
+            end
+
+            local X = math.ceil(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, Slider.MaxSize));
+            Fill.Size = UDim2.new(0, X, 1, 0);
+
+            HideBorderRight.Visible = not (X == Slider.MaxSize or X == 0);
+        end;
+
+        function Slider:SetValue(Str)
+            local Num = tonumber(Str);
+
+            if (not Num) then
+                return;
+            end;
+
+            Num = math.floor(Num + 0.5)
+            Num = math.clamp(Num, Slider.Min, Slider.Max);
+
+            Slider.Value = Num;
+            Slider:Display();
+
+            Library:SafeCallback(Slider.Callback, Slider.Value);
+            Library:SafeCallback(Slider.Changed, Slider.Value);
+        end;
+
         function Slider:OnChanged(Func)
             Slider.Changed = Func;
             Func(Slider.Value);
