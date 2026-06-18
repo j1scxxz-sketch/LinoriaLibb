@@ -459,8 +459,8 @@ do
 
         local PickerFrameOuter = Library:Create('Frame', {
             Name = 'Color';
-            BackgroundColor3 = Library.OutlineColor;
-            BorderColor3 = Library.OutlineColor;
+            BackgroundColor3 = Color3.new(0, 0, 0);
+            BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.fromOffset(DisplayFrame.AbsolutePosition.X, DisplayFrame.AbsolutePosition.Y + 18),
             Size = UDim2.fromOffset(260, Info.Transparency and 310 or 290);
             Visible = false;
@@ -534,7 +534,7 @@ do
         end);
 
         local SatVibMapOuter = Library:Create('Frame', {
-            BorderColor3 = Library.OutlineColor;
+            BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.new(0, 8, 0, 36);
             Size = UDim2.new(0, 210, 0, 180);
             ZIndex = 17;
@@ -578,7 +578,7 @@ do
         })
 
         local HueSelectorOuter = Library:Create('Frame', {
-            BorderColor3 = Library.OutlineColor;
+            BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.new(0, 224, 0, 36);
             Size = UDim2.new(0, 18, 0, 180);
             ZIndex = 17;
@@ -586,15 +586,11 @@ do
         });
 
         local HueSelectorInner = Library:Create('Frame', {
-            BackgroundColor3 = Library.MainColor;
+            BackgroundColor3 = Color3.new(1, 1, 1);
             BorderSizePixel = 0;
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 18;
             Parent = HueSelectorOuter;
-        });
-
-        Library:AddToRegistry(HueSelectorInner, {
-            BackgroundColor3 = 'MainColor';
         });
 
         local HueCursor = Library:Create('Frame', { 
@@ -612,7 +608,7 @@ do
         });
 
         local HueBoxOuter = Library:Create('Frame', {
-            BorderColor3 = Library.OutlineColor;
+            BorderColor3 = Color3.new(0, 0, 0);
             Position = UDim2.fromOffset(8, 222),
             Size = UDim2.new(0.5, -10, 0, 24),
             ZIndex = 18,
@@ -671,7 +667,7 @@ do
         
         if Info.Transparency then 
             TransparencyBoxOuter = Library:Create('Frame', {
-                BorderColor3 = Library.OutlineColor;
+                BorderColor3 = Color3.new(0, 0, 0);
                 Position = UDim2.fromOffset(8, 250);
                 Size = UDim2.new(1, -16, 0, 18);
                 ZIndex = 19;
@@ -727,8 +723,8 @@ do
             })
 
             ContextMenu.Inner = Library:Create('Frame', {
-                BackgroundColor3 = Library.BackgroundColor;
-                BorderColor3 = Library.OutlineColor;
+                BackgroundColor3 = Color3.new(0, 0, 0);
+                BorderColor3 = Color3.new(0, 0, 0);
                 BorderMode = Enum.BorderMode.Inset;
                 Size = UDim2.fromScale(1, 1);
                 ZIndex = 15;
@@ -2151,68 +2147,83 @@ do
             BackgroundColor3 = 'AccentColor';
         });
 
-        local DisplayLabel = Library:Create('TextBox', {
-            BackgroundTransparency = 1;
+        local DisplayLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 1, 0);
             TextSize = 14;
             Text = 'Infinite';
-            Font = Library.Font;
-            TextColor3 = Library.FontColor;
-            TextStrokeTransparency = 0;
-            TextXAlignment = Enum.TextXAlignment.Center;
-            ClearTextOnFocus = true;
             ZIndex = 9;
             Parent = SliderInner;
         });
 
-        Library:ApplyTextStroke(DisplayLabel);
+        local InputBoxOuter = Library:Create('Frame', {
+            BackgroundColor3 = Library.OutlineColor;
+            BorderColor3 = Library.OutlineColor;
+            Size = UDim2.new(1, -4, 0, 22);
+            Position = UDim2.new(0, 2, 0, -3);
+            Visible = false;
+            ZIndex = 15;
+            Parent = SliderOuter;
+        });
 
-        Library:AddToRegistry(DisplayLabel, {
+        local InputBoxInner = Library:Create('Frame', {
+            BackgroundColor3 = Library.MainColor;
+            BorderColor3 = Library.OutlineColor;
+            BorderMode = Enum.BorderMode.Inset;
+            Size = UDim2.new(1, 0, 1, 0);
+            ZIndex = 16;
+            Parent = InputBoxOuter;
+        });
+
+        local InputBox = Library:Create('TextBox', {
+            BackgroundTransparency = 1;
+            Size = UDim2.new(1, -10, 1, 0);
+            Position = UDim2.new(0, 5, 0, 0);
+            Font = Library.Font;
+            Text = '';
+            TextColor3 = Library.FontColor;
+            TextSize = 14;
+            TextStrokeTransparency = 0;
+            ClearTextOnFocus = true;
+            ZIndex = 17;
+            Parent = InputBoxInner;
+        });
+
+        Library:ApplyTextStroke(InputBox);
+
+        Library:AddToRegistry(InputBox, {
             TextColor3 = 'FontColor';
         });
 
-        Library:OnHighlight(SliderOuter, SliderOuter,
-            { BorderColor3 = 'AccentColor' },
-            { BorderColor3 = 'Black' }
-        );
+        local LastClick = 0;
 
-        if type(Info.Tooltip) == 'string' then
-            Library:AddToolTip(Info.Tooltip, SliderOuter)
-        end
-
-        function Slider:UpdateColors()
-            Fill.BackgroundColor3 = Library.AccentColor;
-            Fill.BorderColor3 = Library.AccentColorDark;
-        end;
-
-        function Slider:Display()
-            local Suffix = Info.Suffix or '';
-
-            if Info.Compact then
-                DisplayLabel.Text = Info.Text .. ': ' .. Slider.Value .. Suffix
-            elseif Info.HideMax then
-                DisplayLabel.Text = string.format('%s', Slider.Value .. Suffix)
-            else
-                DisplayLabel.Text = string.format('%s/%s', Slider.Value .. Suffix, Slider.Max .. Suffix);
+        DisplayLabel.InputBegan:Connect(function(Input)
+            if Input.UserInputType == Enum.UserInputType.MouseButton1 then
+                local now = tick()
+                if now - LastClick < 0.3 then
+                    InputBoxOuter.Visible = true
+                    InputBox.Text = tostring(Slider.Value)
+                    InputBox:CaptureFocus()
+                end
+                LastClick = now
             end
+        end);
 
-            local X = math.ceil(Library:MapValue(Slider.Value, Slider.Min, Slider.Max, 0, Slider.MaxSize));
-            Fill.Size = UDim2.new(0, X, 1, 0);
-
-            HideBorderRight.Visible = not (X == Slider.MaxSize or X == 0);
-        end;
-
-        DisplayLabel.FocusLost:Connect(function(enter)
+        InputBox.FocusLost:Connect(function(enter)
             if enter then
-                local num = tonumber(DisplayLabel.Text)
+                local num = tonumber(InputBox.Text)
                 if num then
                     num = math.floor(num + 0.5)
                     Slider:SetValue(num)
-                else
-                    Slider:Display()
                 end
-            else
-                Slider:Display()
+            end
+            InputBoxOuter.Visible = false
+        end);
+
+        InputBox:GetPropertyChangedSignal('Text'):Connect(function()
+            local num = tonumber(InputBox.Text)
+            if num and InputBox:IsFocused() then
+                num = math.floor(num + 0.5)
+                InputBox.Text = tostring(num)
             end
         end);
 
