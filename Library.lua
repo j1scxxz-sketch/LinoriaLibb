@@ -1026,7 +1026,7 @@ do
         local PickOuter = Library:Create('Frame', {
             BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(0, 28, 0, 15);
+            Size = UDim2.new(0, 32, 0, 17);
             ZIndex = 6;
             Parent = ToggleLabel;
         });
@@ -1045,9 +1045,18 @@ do
             BorderColor3 = 'OutlineColor';
         });
 
+        Library:Create('UIGradient', {
+            Color = ColorSequence.new({
+                ColorSequenceKeypoint.new(0, Color3.new(1, 1, 1)),
+                ColorSequenceKeypoint.new(1, Color3.fromRGB(212, 212, 212))
+            });
+            Rotation = 90;
+            Parent = PickInner;
+        });
+
         local DisplayLabel = Library:CreateLabel({
             Size = UDim2.new(1, 0, 1, 0);
-            TextSize = 13;
+            TextSize = 12;
             Text = Info.Default;
             TextWrapped = true;
             ZIndex = 8;
@@ -1430,7 +1439,7 @@ do
             local Outer = Library:Create('Frame', {
                 BackgroundColor3 = Color3.new(0, 0, 0);
                 BorderColor3 = Color3.new(0, 0, 0);
-                Size = UDim2.new(1, -4, 0, 20);
+                Size = UDim2.new(1, -4, 0, 22);
                 ZIndex = 5;
             });
 
@@ -1443,11 +1452,21 @@ do
                 Parent = Outer;
             });
 
+            local Glow = Library:Create('Frame', {
+                BackgroundColor3 = Library.AccentColor;
+                BackgroundTransparency = 1;
+                BorderSizePixel = 0;
+                Size = UDim2.new(1, 0, 0, 0);
+                Position = UDim2.new(0, 0, 1, 0);
+                ZIndex = 7;
+                Parent = Inner;
+            });
+
             local Label = Library:CreateLabel({
                 Size = UDim2.new(1, 0, 1, 0);
                 TextSize = 14;
                 Text = Button.Text;
-                ZIndex = 6;
+                ZIndex = 8;
                 Parent = Inner;
             });
 
@@ -1473,6 +1492,20 @@ do
                 { BorderColor3 = 'AccentColor' },
                 { BorderColor3 = 'Black' }
             );
+
+            Outer.MouseEnter:Connect(function()
+                TweenService:Create(Glow, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    Size = UDim2.new(1, 0, 0, 2);
+                    BackgroundTransparency = 0.3;
+                }):Play();
+            end);
+
+            Outer.MouseLeave:Connect(function()
+                TweenService:Create(Glow, TweenInfo.new(0.2, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                    Size = UDim2.new(1, 0, 0, 0);
+                    BackgroundTransparency = 1;
+                }):Play();
+            end);
 
             return Outer, Inner, Label
         end
@@ -1657,7 +1690,7 @@ do
         local TextBoxOuter = Library:Create('Frame', {
             BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(1, -4, 0, 20);
+            Size = UDim2.new(1, -4, 0, 22);
             ZIndex = 5;
             Parent = Container;
         });
@@ -1832,7 +1865,7 @@ do
         local ToggleOuter = Library:Create('Frame', {
             BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(0, 13, 0, 13);
+            Size = UDim2.new(0, 16, 0, 16);
             ZIndex = 5;
             Parent = Container;
         });
@@ -1855,9 +1888,21 @@ do
             BorderColor3 = 'OutlineColor';
         });
 
+        local ToggleCheck = Library:Create('ImageLabel', {
+            BackgroundTransparency = 1;
+            Size = UDim2.new(0, 10, 0, 10);
+            Position = UDim2.new(0.5, 0, 0.5, 0);
+            AnchorPoint = Vector2.new(0.5, 0.5);
+            Image = 'rbxassetid://7072706620';
+            ImageColor3 = Library.FontColor;
+            ImageTransparency = 1;
+            ZIndex = 7;
+            Parent = ToggleInner;
+        });
+
         local ToggleLabel = Library:CreateLabel({
-            Size = UDim2.new(0, 216, 1, 0);
-            Position = UDim2.new(1, 6, 0, 0);
+            Size = UDim2.new(0, 210, 1, 0);
+            Position = UDim2.new(1, 8, 0, 0);
             TextSize = 14;
             Text = Info.Text;
             TextXAlignment = Enum.TextXAlignment.Left;
@@ -1894,8 +1939,17 @@ do
         end
 
         function Toggle:Display()
-            ToggleInner.BackgroundColor3 = Toggle.Value and Library.AccentColor or Library.MainColor;
-            ToggleInner.BorderColor3 = Toggle.Value and Library.AccentColorDark or Library.OutlineColor;
+            local TargetColor = Toggle.Value and Library.AccentColor or Library.MainColor;
+            local TargetBorder = Toggle.Value and Library.AccentColorDark or Library.OutlineColor;
+
+            TweenService:Create(ToggleInner, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                BackgroundColor3 = TargetColor;
+                BorderColor3 = TargetBorder;
+            }):Play();
+
+            TweenService:Create(ToggleCheck, TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out), {
+                ImageTransparency = Toggle.Value and 0 or 1;
+            }):Play();
 
             Library.RegistryMap[ToggleInner].Properties.BackgroundColor3 = Toggle.Value and 'AccentColor' or 'MainColor';
             Library.RegistryMap[ToggleInner].Properties.BorderColor3 = Toggle.Value and 'AccentColorDark' or 'OutlineColor';
@@ -1989,7 +2043,7 @@ do
         local SliderOuter = Library:Create('Frame', {
             BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(1, -4, 0, 13);
+            Size = UDim2.new(1, -4, 0, 16);
             ZIndex = 5;
             Parent = Container;
         });
@@ -2018,6 +2072,16 @@ do
             Size = UDim2.new(0, 0, 1, 0);
             ZIndex = 7;
             Parent = SliderInner;
+        });
+
+        local FillGlow = Library:Create('Frame', {
+            BackgroundColor3 = Library.AccentColor;
+            BackgroundTransparency = 0.8;
+            BorderSizePixel = 0;
+            Size = UDim2.new(1, 4, 1, 4);
+            Position = UDim2.new(0, -2, 0, -2);
+            ZIndex = 6;
+            Parent = Fill;
         });
 
         Library:AddToRegistry(Fill, {
@@ -2201,7 +2265,7 @@ do
         local DropdownOuter = Library:Create('Frame', {
             BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Color3.new(0, 0, 0);
-            Size = UDim2.new(1, -4, 0, 20);
+            Size = UDim2.new(1, -4, 0, 22);
             ZIndex = 5;
             Parent = Container;
         });
@@ -2236,9 +2300,10 @@ do
         local DropdownArrow = Library:Create('ImageLabel', {
             AnchorPoint = Vector2.new(0, 0.5);
             BackgroundTransparency = 1;
-            Position = UDim2.new(1, -16, 0.5, 0);
-            Size = UDim2.new(0, 12, 0, 12);
-            Image = 'http://www.roblox.com/asset/?id=6282522798';
+            Position = UDim2.new(1, -20, 0.5, 0);
+            Size = UDim2.new(0, 10, 0, 10);
+            Image = 'rbxassetid://7072706796';
+            ImageColor3 = Library.FontColor;
             ZIndex = 8;
             Parent = DropdownInner;
         });
@@ -2988,12 +3053,26 @@ function Library:CreateWindow(...)
     });
 
     local WindowLabel = Library:CreateLabel({
-        Position = UDim2.new(0, 7, 0, 0);
+        Position = UDim2.new(0, 12, 0, 0);
         Size = UDim2.new(0, 0, 0, 25);
         Text = Config.Title or '';
         TextXAlignment = Enum.TextXAlignment.Left;
+        TextSize = 15;
         ZIndex = 1;
         Parent = Inner;
+    });
+
+    local TitleAccent = Library:Create('Frame', {
+        BackgroundColor3 = Library.AccentColor;
+        BorderSizePixel = 0;
+        Size = UDim2.new(0, 3, 0, 15);
+        Position = UDim2.new(0, 6, 0, 5);
+        ZIndex = 1;
+        Parent = Inner;
+    });
+
+    Library:AddToRegistry(TitleAccent, {
+        BackgroundColor3 = 'AccentColor';
     });
 
     local MainSectionOuter = Library:Create('Frame', {
