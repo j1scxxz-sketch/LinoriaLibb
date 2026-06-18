@@ -1911,7 +1911,7 @@ do
         local Container = Groupbox.Container;
 
         local ToggleOuter = Library:Create('Frame', {
-            BackgroundColor3 = Library.OutlineColor;
+            BackgroundColor3 = Color3.new(0, 0, 0);
             BorderColor3 = Library.OutlineColor;
             Size = UDim2.new(0, 16, 0, 16);
             ZIndex = 5;
@@ -1923,12 +1923,17 @@ do
         });
 
         local ToggleInner = Library:Create('Frame', {
-            BackgroundColor3 = Color3.fromRGB(40, 40, 40);
-            BorderColor3 = Color3.fromRGB(100, 100, 100);
+            BackgroundColor3 = Library.MainColor;
+            BorderColor3 = Library.OutlineColor;
             BorderMode = Enum.BorderMode.Inset;
             Size = UDim2.new(1, 0, 1, 0);
             ZIndex = 6;
             Parent = ToggleOuter;
+        });
+
+        Library:AddToRegistry(ToggleInner, {
+            BackgroundColor3 = 'MainColor';
+            BorderColor3 = 'OutlineColor';
         });
 
         local ToggleCheck = Library:Create('ImageLabel', {
@@ -1982,9 +1987,12 @@ do
         end
 
         function Toggle:Display()
-            ToggleInner.BackgroundColor3 = Toggle.Value and Library.AccentColor or Color3.fromRGB(45, 45, 45);
-            ToggleInner.BorderColor3 = Toggle.Value and Library.AccentColorDark or Color3.fromRGB(120, 120, 120);
+            ToggleInner.BackgroundColor3 = Toggle.Value and Library.AccentColor or Library.MainColor;
+            ToggleInner.BorderColor3 = Toggle.Value and Library.AccentColorDark or Library.OutlineColor;
             ToggleCheck.ImageTransparency = Toggle.Value and 0 or 1;
+
+            Library.RegistryMap[ToggleInner].Properties.BackgroundColor3 = Toggle.Value and 'AccentColor' or 'MainColor';
+            Library.RegistryMap[ToggleInner].Properties.BorderColor3 = Toggle.Value and 'AccentColorDark' or 'OutlineColor';
         end;
 
         function Toggle:OnChanged(Func)
